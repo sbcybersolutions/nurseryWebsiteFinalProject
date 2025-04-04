@@ -4,6 +4,7 @@ export const CartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [], // cart items array; each item includes: name, image, cost, quantity, etc.
+   
   },
   reducers: {
     addItem: (state, action) => {

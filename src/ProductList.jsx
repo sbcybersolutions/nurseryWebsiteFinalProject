@@ -8,6 +8,7 @@ function ProductList({ onHomeClick }) {
   const dispatch = useDispatch();
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false);
+  const [addedItems, setAddedItems] = useState(new Set());
 
   const plantsArray = [
     {
@@ -263,6 +264,7 @@ function ProductList({ onHomeClick }) {
 
   const handleAddToCart = (plant) => {
     dispatch(addItem(plant));
+    setAddedItems(prev => new Set(prev).add(plant.name));
   };
 
   return (
@@ -305,17 +307,24 @@ function ProductList({ onHomeClick }) {
             <div key={index}>
               <h1 style={{ textAlign: "center" }}>{category.category}</h1>
               <div className="product-list">
-                {category.plants.map((plant, plantIndex) => (
-                  <div className="product-card" key={plantIndex}>
-                    <img className="product-image" src={plant.image} alt={plant.name} />
-                    <div className="product-title">{plant.name}</div>
-                    <div className="product-description">{plant.description}</div>
-                    <div className="product-cost">{plant.cost}</div>
-                    <button className="product-button" onClick={() => handleAddToCart(plant)}>
-                      Add to Cart
-                    </button>
-                  </div>
-                ))}
+                {category.plants.map((plant, plantIndex) => {
+                  const isAdded = addedItems.has(plant.name);
+                  return (
+                    <div className="product-card" key={plantIndex}>
+                      <img className="product-image" src={plant.image} alt={plant.name} />
+                      <div className="product-title">{plant.name}</div>
+                      <div className="product-description">{plant.description}</div>
+                      <div className="product-cost">{plant.cost}</div>
+                      <button
+                        className={`product-button ${isAdded ? 'added-to-cart' : ''}`}
+                        onClick={() => handleAddToCart(plant)}
+                        disabled={isAdded}
+                      >
+                        {isAdded ? 'Added to Cart' : 'Add to Cart'}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
