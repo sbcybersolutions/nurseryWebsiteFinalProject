@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './ProductList.css';
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
 
 function ProductList({ onHomeClick }) {
   const dispatch = useDispatch();
+
+  const cartItems = useSelector((state) => state.cart.items);
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false);
   const [addedItems, setAddedItems] = useState(new Set());
@@ -264,7 +268,7 @@ function ProductList({ onHomeClick }) {
 
   const handleAddToCart = (plant) => {
     dispatch(addItem(plant));
-    setAddedItems(prev => new Set(prev).add(plant.name));
+    setAddedItems((prev) => new Set(prev).add(plant.name));
   };
 
   return (
@@ -287,7 +291,21 @@ function ProductList({ onHomeClick }) {
           </div>
           <div>
             <a href="#" onClick={handleCartClick} style={styleA}>
-              <h1 className="cart">
+              <h1 className="cart" style={{ position: 'relative' }}>
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-10px',
+                    right: '-10px',
+                    backgroundColor: 'red',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '4px 8px',
+                    fontSize: '14px',
+                  }}
+                >
+                  {cartCount}
+                </span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" height="68" width="68">
                   <rect width="156" height="156" fill="none" />
                   <circle cx="80" cy="216" r="12" />
@@ -337,4 +355,3 @@ function ProductList({ onHomeClick }) {
 }
 
 export default ProductList;
-
